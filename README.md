@@ -39,6 +39,9 @@ za stronę) oraz druk jedno- lub dwustronny. Wynik pojawia się na tym samym ekr
 
 **Visual Studio:** otwórz `PunktDruku.sln`, ustaw projekt `PunktDruku` jako startowy,
 wybierz cel *Android Emulators → (twój emulator)* i naciśnij **F5**.
+Projekt jest skonfigurowany tylko dla Androida (`net8.0-android`), więc nie uruchamia się jako
+*Windows Machine*. Jeśli lista emulatorów jest pusta, utwórz emulator w
+*Tools → Android → Android Device Manager*.
 
 **Wiersz poleceń:**
 

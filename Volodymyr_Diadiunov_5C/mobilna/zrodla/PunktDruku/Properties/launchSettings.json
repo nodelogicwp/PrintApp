@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PunktDruku (Android)": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

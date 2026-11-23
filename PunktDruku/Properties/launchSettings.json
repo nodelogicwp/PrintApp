@@ -1,7 +1,7 @@
 {
   "profiles": {
-    "Windows Machine": {
-      "commandName": "MsixPackage",
+    "PunktDruku (Android)": {
+      "commandName": "Project",
       "nativeDebugging": false
     }
   }
