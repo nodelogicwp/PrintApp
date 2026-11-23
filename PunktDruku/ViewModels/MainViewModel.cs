@@ -1,4 +1,7 @@
+using System.Globalization;
 using System.Windows.Input;
+using PunktDruku.Models;
+using PunktDruku.Services;
 
 namespace PunktDruku.ViewModels;
 
@@ -9,6 +12,7 @@ public class MainViewModel : BaseViewModel
 {
     public const string EmptyResult = "-";
     public const string InitialStatus = "Uzupełnij dane i wybierz OBLICZ.";
+    public const string SuccessStatus = "Obliczenie zakończone.";
 
     private string _pagesText = string.Empty;
     private string _copiesText = string.Empty;
@@ -22,7 +26,7 @@ public class MainViewModel : BaseViewModel
 
     public MainViewModel()
     {
-        CalculateCommand = new Command(() => { });
+        CalculateCommand = new Command(Calculate);
         ClearCommand = new Command(() => { });
     }
 
@@ -87,4 +91,24 @@ public class MainViewModel : BaseViewModel
     public ICommand CalculateCommand { get; }
 
     public ICommand ClearCommand { get; }
+
+    /// <summary>Obsługa przycisku OBLICZ: odczyt danych, obliczenia i prezentacja wyniku.</summary>
+    private void Calculate()
+    {
+        int pages = int.Parse(PagesText.Trim(), CultureInfo.InvariantCulture);
+        int copies = int.Parse(CopiesText.Trim(), CultureInfo.InvariantCulture);
+        var mode = (PrintMode)SelectedPrintModeIndex;
+
+        PrintResult result = PrintCostCalculator.Calculate(pages, copies, mode, IsDuplex);
+        ShowResult(result);
+    }
+
+    private void ShowResult(PrintResult result)
+    {
+        PrintedPagesText = result.PrintedPages.ToString(CultureInfo.InvariantCulture);
+        SheetsText = result.Sheets.ToString(CultureInfo.InvariantCulture);
+        CostText = PrintCostCalculator.FormatCost(result.Cost);
+        IsError = false;
+        StatusText = SuccessStatus;
+    }
 }
