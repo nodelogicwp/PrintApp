@@ -95,9 +95,20 @@ public class MainViewModel : BaseViewModel
     /// <summary>Obsługa przycisku OBLICZ: odczyt danych, obliczenia i prezentacja wyniku.</summary>
     private void Calculate()
     {
-        int pages = int.Parse(PagesText.Trim(), CultureInfo.InvariantCulture);
-        int copies = int.Parse(CopiesText.Trim(), CultureInfo.InvariantCulture);
-        var mode = (PrintMode)SelectedPrintModeIndex;
+        // Kolejność walidacji: najpierw strony, potem kopie - pokazujemy tylko pierwszy błąd.
+        if (!InputValidator.TryParsePages(PagesText, out int pages))
+        {
+            ShowError(InputValidator.InvalidPagesMessage);
+            return;
+        }
+
+        if (!InputValidator.TryParseCopies(CopiesText, out int copies))
+        {
+            ShowError(InputValidator.InvalidCopiesMessage);
+            return;
+        }
+
+        var mode = SelectedPrintModeIndex == (int)PrintMode.Color ? PrintMode.Color : PrintMode.BlackAndWhite;
 
         PrintResult result = PrintCostCalculator.Calculate(pages, copies, mode, IsDuplex);
         ShowResult(result);
@@ -110,5 +121,20 @@ public class MainViewModel : BaseViewModel
         CostText = PrintCostCalculator.FormatCost(result.Cost);
         IsError = false;
         StatusText = SuccessStatus;
+    }
+
+    /// <summary>Błąd walidacji: wyniki "-", komunikat w kolorze błędu, formularz bez zmian.</summary>
+    private void ShowError(string message)
+    {
+        ClearResults();
+        IsError = true;
+        StatusText = message;
+    }
+
+    private void ClearResults()
+    {
+        PrintedPagesText = EmptyResult;
+        SheetsText = EmptyResult;
+        CostText = EmptyResult;
     }
 }
