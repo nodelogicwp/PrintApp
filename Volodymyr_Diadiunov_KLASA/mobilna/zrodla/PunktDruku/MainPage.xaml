@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PunktDruku.ViewModels"
+             x:Class="PunktDruku.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="Punkt druku"
+             BackgroundColor="{StaticResource PageBackgroundColor}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Kolory projektu -->
+            <Color x:Key="PageBackgroundColor">#F3F6FA</Color>
+            <Color x:Key="TextPrimaryColor">#172B4D</Color>
+            <Color x:Key="TextSecondaryColor">#66768F</Color>
+            <Color x:Key="AccentColor">#2457C5</Color>
+            <Color x:Key="ErrorColor">#B42318</Color>
+            <Color x:Key="SurfaceColor">#FFFFFF</Color>
+            <Color x:Key="BorderColor">#DCE3EC</Color>
+
+            <!-- Zwykłe etykiety -->
+            <Style x:Key="FieldLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+            </Style>
+
+            <!-- Tekst pomocniczy i status -->
+            <Style x:Key="HelperLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+            </Style>
+
+            <!-- Etykiety wyników w podsumowaniu -->
+            <Style x:Key="SummaryLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+            </Style>
+
+            <!-- Pola tekstowe -->
+            <Style x:Key="NumberEntryStyle" TargetType="Entry">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Keyboard" Value="Numeric" />
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceColor}" />
+                <Setter Property="TextColor" Value="{StaticResource TextPrimaryColor}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextSecondaryColor}" />
+                <Setter Property="MinimumHeightRequest" Value="48" />
+                <Setter Property="HeightRequest" Value="48" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView Orientation="Vertical">
+        <VerticalStackLayout Padding="20" Spacing="12">
+
+            <!-- Nagłówek -->
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Punkt druku"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimaryColor}" />
+                <Label Text="Oblicz koszt i zużycie papieru"
+                       Style="{StaticResource HelperLabelStyle}" />
+            </VerticalStackLayout>
+
+            <!-- Liczba stron -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Liczba stron w dokumencie"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Entry x:Name="PagesEntry"
+                       Placeholder="1-500"
+                       Text="{Binding PagesText}"
+                       Style="{StaticResource NumberEntryStyle}"
+                       SemanticProperties.Description="Liczba stron w dokumencie" />
+            </VerticalStackLayout>
+
+            <!-- Liczba kopii -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Liczba kopii"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Entry x:Name="CopiesEntry"
+                       Placeholder="1-100"
+                       Text="{Binding CopiesText}"
+                       Style="{StaticResource NumberEntryStyle}"
+                       SemanticProperties.Description="Liczba kopii" />
+            </VerticalStackLayout>
+
+            <!-- Tryb druku -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Tryb druku"
+                       Style="{StaticResource FieldLabelStyle}" />
+                <Picker x:Name="PrintModePicker"
+                        ItemsSource="{Binding PrintModeNames}"
+                        SelectedIndex="{Binding SelectedPrintModeIndex}"
+                        FontSize="16"
+                        TextColor="{StaticResource TextPrimaryColor}"
+                        BackgroundColor="{StaticResource SurfaceColor}"
+                        MinimumHeightRequest="48"
+                        HeightRequest="48"
+                        SemanticProperties.Description="Tryb druku" />
+            </VerticalStackLayout>
+
+            <!-- Druk dwustronny -->
+            <VerticalStackLayout Spacing="2">
+                <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="48">
+                    <Label Grid.Column="0"
+                           Text="Druk dwustronny"
+                           VerticalOptions="Center"
+                           Style="{StaticResource FieldLabelStyle}" />
+                    <Switch x:Name="DuplexSwitch"
+                            Grid.Column="1"
+                            IsToggled="{Binding IsDuplex}"
+                            OnColor="{StaticResource AccentColor}"
+                            VerticalOptions="Center"
+                            SemanticProperties.Description="Druk dwustronny" />
+                </Grid>
+                <Label Text="Każda kopia zaczyna się na nowym arkuszu."
+                       Style="{StaticResource HelperLabelStyle}" />
+            </VerticalStackLayout>
+
+            <!-- Przyciski -->
+            <VerticalStackLayout Spacing="12">
+                <Button Text="OBLICZ"
+                        Command="{Binding CalculateCommand}"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        BackgroundColor="{StaticResource AccentColor}"
+                        TextColor="White"
+                        CornerRadius="8"
+                        MinimumHeightRequest="48"
+                        HeightRequest="48"
+                        HorizontalOptions="Fill" />
+                <Button Text="WYCZYŚĆ"
+                        Command="{Binding ClearCommand}"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        BackgroundColor="White"
+                        TextColor="{StaticResource AccentColor}"
+                        BorderColor="{StaticResource AccentColor}"
+                        BorderWidth="1"
+                        CornerRadius="8"
+                        MinimumHeightRequest="48"
+                        HeightRequest="48"
+                        HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+
+            <!-- Podsumowanie (stale widoczne) -->
+            <Border BackgroundColor="{StaticResource SurfaceColor}"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeThickness="1"
+                    Padding="14,12">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Podsumowanie"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimaryColor}" />
+                    <Label Text="{Binding PrintedPagesText, StringFormat='Zadrukowane strony: {0}'}"
+                           Style="{StaticResource SummaryLabelStyle}" />
+                    <Label Text="{Binding SheetsText, StringFormat='Arkusze papieru: {0}'}"
+                           Style="{StaticResource SummaryLabelStyle}" />
+                    <Label Text="{Binding CostText, StringFormat='Koszt: {0}'}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource AccentColor}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Status / komunikat błędu -->
+            <Label Text="{Binding StatusText}"
+                   Style="{StaticResource HelperLabelStyle}">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsError}" Value="True">
+                        <Setter Property="TextColor" Value="{StaticResource ErrorColor}" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
