@@ -5,7 +5,7 @@ oraz **liczbę zadrukowanych stron i arkuszy papieru**. Użytkownik podaje liczb
 (1–500) i kopii (1–100), wybiera tryb druku (czarno-biały 0,25 zł / kolorowy 1,00 zł
 za stronę) oraz druk jedno- lub dwustronny. Wynik pojawia się na tym samym ekranie.
 
-**Autor:** Volodymyr Diadiunov
+**Autor:** Volodymyr Diadiunov, klasa 5C
 
 ## Funkcje
 

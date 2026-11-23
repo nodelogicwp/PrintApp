@@ -1,6 +1,6 @@
 # Punkt druku – dokumentacja testów
 
-**Autor:** Volodymyr Diadiunov  
+**Autor:** Volodymyr Diadiunov, klasa 5C  
 **Projekt:** aplikacja mobilna .NET MAUI „Punkt druku” (INF.04)
 
 ## Użyte narzędzia
