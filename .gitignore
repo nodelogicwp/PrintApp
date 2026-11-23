@@ -1,0 +1,27 @@
+# Katalogi kompilacji i pliki tymczasowe .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Wyniki testów i pakiety
+[Tt]est[Rr]esult*/
+*.trx
+*.nupkg
+packages/
+
+# Android / iOS
+*.apk
+*.aab
+*.keystore
+Resource.designer.cs
+
+# Systemowe
+.DS_Store
+Thumbs.db
