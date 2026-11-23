@@ -27,7 +27,7 @@ public class MainViewModel : BaseViewModel
     public MainViewModel()
     {
         CalculateCommand = new Command(Calculate);
-        ClearCommand = new Command(() => { });
+        ClearCommand = new Command(Clear);
     }
 
     /// <summary>Pozycje kontrolki Picker w kolejności z wymagań.</summary>
@@ -36,25 +36,50 @@ public class MainViewModel : BaseViewModel
     public string PagesText
     {
         get => _pagesText;
-        set => SetProperty(ref _pagesText, value ?? string.Empty);
+        set
+        {
+            if (SetProperty(ref _pagesText, value ?? string.Empty))
+            {
+                ResetToInitialState();
+            }
+        }
     }
 
     public string CopiesText
     {
         get => _copiesText;
-        set => SetProperty(ref _copiesText, value ?? string.Empty);
+        set
+        {
+            if (SetProperty(ref _copiesText, value ?? string.Empty))
+            {
+                ResetToInitialState();
+            }
+        }
     }
 
     public int SelectedPrintModeIndex
     {
         get => _selectedPrintModeIndex;
-        set => SetProperty(ref _selectedPrintModeIndex, value);
+        set
+        {
+            // Picker może chwilowo zgłosić -1 (brak wyboru) - ignorujemy taką wartość.
+            if (value >= 0 && SetProperty(ref _selectedPrintModeIndex, value))
+            {
+                ResetToInitialState();
+            }
+        }
     }
 
     public bool IsDuplex
     {
         get => _isDuplex;
-        set => SetProperty(ref _isDuplex, value);
+        set
+        {
+            if (SetProperty(ref _isDuplex, value))
+            {
+                ResetToInitialState();
+            }
+        }
     }
 
     public string PrintedPagesText
@@ -121,6 +146,30 @@ public class MainViewModel : BaseViewModel
         CostText = PrintCostCalculator.FormatCost(result.Cost);
         IsError = false;
         StatusText = SuccessStatus;
+    }
+
+    /// <summary>
+    /// Obsługa przycisku WYCZYŚĆ: puste pola, druk czarno-biały, druk jednostronny,
+    /// wyniki "-" i status początkowy.
+    /// </summary>
+    private void Clear()
+    {
+        PagesText = string.Empty;
+        CopiesText = string.Empty;
+        SelectedPrintModeIndex = (int)PrintMode.BlackAndWhite;
+        IsDuplex = false;
+        ResetToInitialState();
+    }
+
+    /// <summary>
+    /// Wywoływana po każdej zmianie formularza (pola, Picker, Switch):
+    /// usuwa poprzedni wynik oraz komunikat błędu. Nowe obliczenie dopiero po OBLICZ.
+    /// </summary>
+    private void ResetToInitialState()
+    {
+        ClearResults();
+        IsError = false;
+        StatusText = InitialStatus;
     }
 
     /// <summary>Błąd walidacji: wyniki "-", komunikat w kolorze błędu, formularz bez zmian.</summary>
